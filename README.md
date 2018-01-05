@@ -48,3 +48,30 @@ docker run -ti \
 * The `~/.sbt/preloaded` is mounted into the container as `read-only` to reuse the host machine's downloaded SBT artefacts.
 
 At the completion of the command, you will find the `.rpm` package built in the `target` directory of your project.
+
+#### `xenial-jdk-8-sbt`
+
+This image is created to facilitate building Debian archives on non Debian based distro.
+
+The `ubuntu:xenial` image is used as base image with the following additional items installed:
+
+* Open JDK 8
+* SBT `1.0.4`
+
+Example usage:
+
+```bash
+docker run -ti \
+  -v `pwd`:/opt/source:rw \
+  -v ~/.ivy2/cache:/root/.ivy2/cache:rw \
+  -v ~/.sbt/preloaded:/root/.sbt/preloaded:ro \
+  fsat/xenial-jdk-8-sbt:latest \
+  bash -c "cd /opt/source && sbt debian:packageBin"
+```
+
+* Run the command above on the root of the SBT project you wish to build the Debian package for.
+* If not running on the root of the project, replace `pwd` with the path of to the root of the project.
+* The `~/.ivy2/cache` is mounted into the container as `read-write` to reuse the host machine's Ivy cache.
+* The `~/.sbt/preloaded` is mounted into the container as `read-only` to reuse the host machine's downloaded SBT artefacts.
+
+At the completion of the command, you will find the `.deb` package built in the `target` directory of your project.
